@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['LearnSNS'])) {
-    header('Location : singup.php');
+    header('Location:signup.php');
     exit();
 }
 $name = $_SESSION['LearnSNS']['name'];

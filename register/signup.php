@@ -1,6 +1,15 @@
 <?php
 session_start();
 $errors = [];
+if (isset($_GET['action']) && $_GET['action'] == 'rewrite') {
+    $_POST['input_name'] = $_SESSION['LearnSNS']['name'];
+    $_POST['input_email'] = $_SESSION['LearnSNS']['email'];
+    $_POST['input_password'] = $_SESSION['LearnSNS']['password'];
+    $errors['rewrite'] = true;
+}
+
+$name = '';
+$email = '';
 if (!empty($_POST)) {
     $name = $_POST['input_name'];
     if ($name == '') {
@@ -17,7 +26,10 @@ if (!empty($_POST)) {
     } elseif ($count < 4  || $count > 16) {
         $errors['password'] = 'length';
     }
-    $file_name = $_FILES['input_img_name']['name'];
+    // $file_name = '';
+    if (!isset($_GET['action'])) {
+        $file_name = $_FILES['input_img_name']['name'];
+    }
     if (!empty($file_name)) {
         $file_type = substr($file_name, -3);
         $file_type = strtolower($file_type);
@@ -43,6 +55,7 @@ if (!empty($_POST)) {
 
 
 
+
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -62,7 +75,7 @@ if (!empty($_POST)) {
                     <div class="form-group">
                         <label for="name">ユーザー名</label>
                         <input type="text" name="input_name" class="form-control" id="name" placeholder="山田 太郎"
-                            value="">
+                            value="<?php echo $_POST['input_name'] ?>">
                         <?php if (isset($errors['name']) && $errors['name'] == 'blank') : ?>
                         <p class="text-danger">お名前を入力してください</p>
                         <?php endif; ?>
@@ -70,7 +83,7 @@ if (!empty($_POST)) {
                     <div class="form-group">
                         <label for="email">メールアドレス</label>
                         <input type="email" name="input_email" class="form-control" id="email" placeholder="example@gmail.com"
-                            value="">
+                            value="<?php echo $_POST['input_email'] ?>">
                         <?php if (isset($errors['email']) && $errors['email'] == 'blank') : ?>
                         <p class="text-danger">メールアドレスを入力してください</p>
                         <?php endif; ?>
@@ -83,6 +96,8 @@ if (!empty($_POST)) {
                     <p class="text-danger">パスワードを入力してください</p>
                     <?php elseif (isset($errors['password']) && $errors['password'] == 'length') : ?>
                     <p class="text-danger">4~16文字のパスワードを入力してください。</p>
+                    <?php elseif (!empty($errors)) : ?>
+                    <p class="text-danger">パスワードを再度入力してください</p>
                     <?php endif; ?>
                     <div class="form-group">
                         <label for="img_name">プロフィール画像</label>
