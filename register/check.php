@@ -1,5 +1,7 @@
 <?php
 session_start();
+require('../dbconnect.php');
+require('../function.php');
 if (!isset($_SESSION['LearnSNS'])) {
     header('Location:signup.php');
     exit();
@@ -7,6 +9,13 @@ if (!isset($_SESSION['LearnSNS'])) {
 $name = $_SESSION['LearnSNS']['name'];
 $email = $_SESSION['LearnSNS']['email'];
 $password = $_SESSION['LearnSNS']['password'];
+$img_name = $_SESSION['LearnSNS']['img_name'];
+
+if (!empty($_POST)) {
+    createUser ($dbh, $name, $email, $password, $img_name);
+    unset($_SESSION['LearnSNS']);
+    header('Location:thanks.php');
+}
 
 ?>
 <!DOCTYPE html>
@@ -39,7 +48,7 @@ $password = $_SESSION['LearnSNS']['password'];
                             <span>パスワード</span>
                             <p class="lead">●●●●●●●●</p>
                         </div>
-                        <form method="POST" action="thanks.php">
+                        <form method="POST" action="check.php">
                             <a href="signup.php?action=rewrite" class="btn btn-default">&laquo;&nbsp;戻る</a> | 
                             <input type="hidden" name="action" value="submit">
                             <input type="submit" class="btn btn-primary" value="ユーザー登録">
