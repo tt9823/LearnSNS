@@ -33,7 +33,7 @@ if (!empty($_POST)) {
                 <h2 class="text-center content_header">アカウント情報確認</h2>
                 <div class="row">
                     <div class="col-xs-4">
-                        <img src="../user_profile_img/misae.png" class="img-responsive img-thumbnail">
+                        <img src="../user_profile_img/<?php echo $img_name ?>" class="img-responsive img-thumbnail">
                     </div>
                     <div class="col-xs-8">
                         <div>
