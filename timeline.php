@@ -1,4 +1,11 @@
 <?php
+session_start();
+require('dbconnect.php');
+require('function.php');
+
+$user_id = $_SESSION['LearnSNS']['id'];
+$signin_user = getSinginUser ($dbh, $user_id);
+// var_dump($signin_user);
 
 ?>
 <?php include('layouts/header.php'); ?>

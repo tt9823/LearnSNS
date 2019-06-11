@@ -40,14 +40,16 @@ if (!empty($_POST)) {
         $errors['img_name'] = 'blank';
     }
     if (empty($errors)) {
+        date_default_timezone_set("Asia/Manila");
         $date_str = date('YmdHis');
         $submit_file_name = $date_str . $file_name;
-        move_uploaded_file($_FILES['input_img_name']['tmp_name'], '../user_profile_img/.$submit_file_name');
+        // var_dump($_FILES["input_img_name"]["tmp_name"]);
+        // die();
+        move_uploaded_file($_FILES["input_img_name"]["tmp_name"], "../user_profile_img/" . $submit_file_name);
         $_SESSION['LearnSNS']['name'] = $_POST["input_name"];
         $_SESSION['LearnSNS']['email'] = $_POST["input_email"];
         $_SESSION['LearnSNS']['password'] = $_POST["input_password"];
         $_SESSION['LearnSNS']['img_name'] = $submit_file_name;
-        // die();
         header('Location: check.php');
         exit();
     }
@@ -75,7 +77,9 @@ if (!empty($_POST)) {
                     <div class="form-group">
                         <label for="name">ユーザー名</label>
                         <input type="text" name="input_name" class="form-control" id="name" placeholder="山田 太郎"
-                            value="<?php echo $_POST['input_name'] ?>">
+                        <?php if (isset($_POST['input_name'])) : ?>
+                        value="<?php echo $_POST['input_name']; ?>"
+                        <?php endif; ?>>
                         <?php if (isset($errors['name']) && $errors['name'] == 'blank') : ?>
                         <p class="text-danger">お名前を入力してください</p>
                         <?php endif; ?>
@@ -83,7 +87,9 @@ if (!empty($_POST)) {
                     <div class="form-group">
                         <label for="email">メールアドレス</label>
                         <input type="email" name="input_email" class="form-control" id="email" placeholder="example@gmail.com"
-                            value="<?php echo $_POST['input_email'] ?>">
+                            value="<?php if (isset($_POST['input_email'])) : ?>
+                            <?php echo $_POST['input_email']; ?>
+                            <?php endif; ?>">
                         <?php if (isset($errors['email']) && $errors['email'] == 'blank') : ?>
                         <p class="text-danger">メールアドレスを入力してください</p>
                         <?php endif; ?>
