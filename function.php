@@ -45,3 +45,29 @@ function getAllFeeds($dbh)
     $feeds = $stmt->fetchall(PDO::FETCH_ASSOC);
     return $feeds;
 }
+
+function deletePost($dbh, $feed_id)
+{
+    $sql = "DELETE FROM `feeds` WHERE `id` = ?";
+    $data = array($feed_id);
+    $stmt = $dbh->prepare($sql);
+    $stmt->execute($data);
+}
+
+function editGetFeed($dbh, $feed_id)
+{
+    $sql = "SELECT `f`.*, `u`.`name`, `u`.`img_name` FROM `feeds` AS `f` LEFT JOIN `users` AS `u` ON `f`.`user_id` = `u`.`id` WHERE `f`.`id` = ?";
+    $data = array($feed_id);
+    $stmt = $dbh->prepare($sql);
+    $stmt->execute($data);
+    $feeds = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $feeds;
+}
+
+function upDatePost($dbh, $feed_content, $feed_id)
+{
+    $sql = 'UPDATE `feeds` SET `feed` = ? WHERE `id` = ?';
+    $data = array($feed_content, $feed_id);
+    $stmt = $dbh->prepare($sql);
+    $stmt->execute($data);
+}
