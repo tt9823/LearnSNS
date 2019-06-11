@@ -1,4 +1,23 @@
 <?php
+session_start();
+require('dbconnect.php');
+require('function.php');
+$user_id = $_SESSION['LearnSNS']['id'];
+$signin_user = getSinginUser($dbh, $user_id);
+
+if (isset($_GET['feed_id'])) {
+    $feed_id = $_GET['feed_id'];
+    $feed = editGetFeed($dbh, $feed_id);
+}
+
+if (!empty($_POST)) {
+    $feed_content = $_POST['feed'];
+    $feed_id = $_POST['feed_id'];
+    upDatePost($dbh, $feed_content, $feed_id);
+    header('Location:timeline.php');
+}
+
+
 
 ?>
 <!DOCTYPE html>
@@ -15,12 +34,13 @@
     <div class="container">
         <div class="row">
             <div class="col-xs-4 col-xs-offset-4">
-                <form class="form-group" method="post" action="timeline.php">
-                    <img src="user_profile_img/misae.png" width="60">
-                    野原みさえ<br>
-                    2018-10-14<br>
-                    <textarea name="feed" class="form-control">LearnSNSの開発頑張ろう！</textarea>
+                <form class="form-group" method="post" action="edit.php">
+                    <img src="user_profile_img/<?php echo $feed['img_name']; ?>" width="60">
+                    <?php echo $feed['name']; ?><br>
+                    <?php echo $feed['created']; ?><br>
+                    <textarea name="feed" class="form-control"><?php echo $feed['feed'] ?></textarea>
                     <input type="submit" value="更新" class="btn btn-warning btn-xs">
+                    <input type="hidden" name="feed_id" value="<?php echo $feed['id'] ?>">
                 </form>
             </div>
         </div>
