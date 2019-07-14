@@ -36,9 +36,9 @@ function createFeed($dbh, $feed, $user_id, $img_name)
     $stmt->execute($data);
 }
 
-function getAllFeeds($dbh)
+function getAllFeeds($dbh, $content_per_page, $start)
 {
-    $sql = "SELECT `f`.*, `u`.`name`, `u`.`img_name` FROM `feeds` AS `f` LEFT JOIN `users` AS `u` ON `f`.`user_id` = `u`.`id` ORDER BY id DESC";
+    $sql = "SELECT `f`.*, `u`.`name`, `u`.`img_name` FROM `feeds` AS `f` LEFT JOIN `users` AS `u` ON `f`.`user_id` = `u`.`id` ORDER BY id DESC LIMIT $content_per_page OFFSET $start";
     $data = array();
     $stmt = $dbh->prepare($sql);
     $stmt->execute($data);
@@ -70,4 +70,13 @@ function upDatePost($dbh, $feed_content, $feed_id)
     $data = array($feed_content, $feed_id);
     $stmt = $dbh->prepare($sql);
     $stmt->execute($data);
+}
+
+function feedsCnt($dbh)
+{
+    $sql = "SELECT COUNT(*) AS `cnt` FROM `feeds`";
+    $stmt = $dbh->prepare($sql);
+    $stmt->execute();
+    $record_cnt = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $record_cnt;
 }
