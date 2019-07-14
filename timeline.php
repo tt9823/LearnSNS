@@ -3,13 +3,15 @@ session_start();
 require('dbconnect.php');
 require('function.php');
 
+
+
 if (!isset($_SESSION['LearnSNS']['id'])) {
     header('Location:signin.php');
 }
 
 $user_id = $_SESSION['LearnSNS']['id'];
 $signin_user = getSinginUser ($dbh, $user_id);
-var_dump($signin_user);
+// var_dump($signin_user);
 $img_name = $signin_user['img_name'];
 
 
@@ -26,9 +28,24 @@ if (!empty($_POST)) {
     }
 }
 
-$feeds = getAllFeeds ($dbh);
-// var_dump($signin_user['id']);
-// var_dump($feeds);
+if (isset($_GET['page'])) {
+    $page = $_GET['page'];
+} else {
+    $page = 1;
+}
+
+const CONTENT_PER_PAGE = 5;
+$content_per_page = CONTENT_PER_PAGE;
+$page = max($page, 1);
+$records_cnt = feedsCnt($dbh);
+$last_page = ceil($records_cnt['cnt']/$content_per_page);
+$page = min($page, $last_page);
+$start = ($page - 1) * $content_per_page;
+
+// var_dump($records_cnt);
+// die();
+
+$feeds = getAllFeeds($dbh, $content_per_page, $start);
 
 ?>
 <?php include('layouts/header.php'); ?>
@@ -91,8 +108,16 @@ $feeds = getAllFeeds ($dbh);
                 <?php endif; ?>
                 <div aria-label="Page navigation">
                     <ul class="pager">
-                        <li class="previous disabled"><a><span aria-hidden="true">&larr;</span> Newer</a></li>
-                        <li class="next disabled"><a>Older <span aria-hidden="true">&rarr;</span></a></li>
+                        <?php if($page == 1) : ?>
+                            <li class="previous disabled"><a><span aria-hidden="true">&larr;</span> Newer</a></li>
+                        <?php else : ?>
+                            <li class="previous"><a href='timeline.php?page=<?php echo $page - 1; ?>'><span aria-hidden="true">&larr;</span> Newer</a></li>
+                        <?php endif; ?>
+                        <?php if($page == $last_page) : ?>
+                            <li class="next disabled"><a>Older <span aria-hidden="true">&rarr;</span></a></li>
+                        <?php else : ?>
+                            <li class="next"><a href='timeline.php?page=<?php echo $page + 1; ?>'>Older <span aria-hidden="true">&rarr;</span></a></li>
+                        <?php endif; ?>
                     </ul>
                 </div>
             </div>
