@@ -80,3 +80,24 @@ function feedsCnt($dbh)
     $record_cnt = $stmt->fetch(PDO::FETCH_ASSOC);
     return $record_cnt;
 }
+
+
+function getAllusers($dbh)
+{
+    $sql = "SELECT * FROM `users`";
+    $stmt = $dbh->prepare($sql);
+    $stmt->execute();
+    $users = $stmt->fetchall(PDO::FETCH_ASSOC);
+    return $users;
+}
+
+function getUsersFeedCnt($dbh, $user)
+{
+    $record_id = $user['id'];
+    $sql = 'SELECT COUNT(*) AS `cnt` FROM `feeds` WHERE `user_id` = ?';
+    $data = array($record_id);
+    $stmt = $dbh->prepare($sql);
+    $stmt->execute($data);
+    $feed_cnt = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $feed_cnt;
+}
