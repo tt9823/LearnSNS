@@ -101,3 +101,33 @@ function getUsersFeedCnt($dbh, $user)
     $feed_cnt = $stmt->fetch(PDO::FETCH_ASSOC);
     return $feed_cnt;
 }
+
+function insertComments($dbh, $comment, $user_id, $feed_id)
+{
+    $sql = $sql = 'INSERT INTO `comments` SET `comment` = ?, `user_id` = ?, `feed_id` = ?, `created` = NOW()';
+    $data = array($comment, $user_id, $feed_id);
+    $stmt = $dbh->prepare($sql);
+    $stmt->execute($data);
+}
+
+function getComment($dbh, $feed)
+{
+    $feed_id = $feed['id'];
+    $sql = "SELECT * FROM `comments` LEFT JOIN `users` ON `comments`.`user_id` = `users`.`id` WHERE `comments`.`feed_id` = ?";
+    $data = array($feed_id);
+    $stmt = $dbh->prepare($sql);
+    $stmt->execute($data);
+    $comment = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $comment;
+}
+
+function getCommentcnt($dbh, $feed)
+{
+    $feed_id = $feed['id'];
+    $sql = 'SELECT COUNT(*) AS `cnt` FROM `comments` WHERE `feed_id` = ?';
+    $data = array($feed_id);
+    $stmt = $dbh->prepare($sql);
+    $stmt->execute($data);
+    $comment_cnt = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $comment_cnt;
+}
