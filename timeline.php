@@ -42,10 +42,8 @@ $last_page = ceil($records_cnt['cnt']/$content_per_page);
 $page = min($page, $last_page);
 $start = ($page - 1) * $content_per_page;
 
-// var_dump($records_cnt);
-// die();
-
 $feeds = getAllFeeds($dbh, $content_per_page, $start);
+
 
 ?>
 <?php include('layouts/header.php'); ?>
@@ -73,6 +71,8 @@ $feeds = getAllFeeds($dbh, $content_per_page, $start);
                 </div>
                 <?php if(isset($feeds)) : ?>
                 <?php foreach ($feeds as $feed) : ?>
+                <?php $comment = getComment($dbh, $feed); ?>
+                <?php $comment_cnt = getCommentcnt($dbh, $feed); ?>
                 <div class="thumbnail">
                     <div class="row">
                         <div class="col-xs-1">
@@ -90,12 +90,13 @@ $feeds = getAllFeeds($dbh, $content_per_page, $start);
                     </div>
                     <div class="row feed_sub">
                         <div class="col-xs-12">
-
                             <button class="btn btn-default">いいね！</button>
                             いいね数：
                             <span class="like-count">10</span>
-                            <a href="#collapseComment" data-toggle="collapse" aria-expanded="false"><span>コメントする</span></a>
-                            <span class="comment-count">コメント数：5</span>
+                            <?php if ($signin_user['id'] !== $feed['user_id']) : ?>
+                                <a href="#collapseComment<?php echo $feed['id']; ?>" data-toggle="collapse" aria-expanded="false"><span>コメントする</span></a>
+                            <?php endif; ?>
+                            <span class="comment-count">コメント数：<?php echo $comment_cnt['cnt'] ?></span>
                             <?php if ($feed['name'] == $signin_user['name']) : ?>
                             <a href="edit.php?feed_id=<?php echo $feed['id']; ?>" class="btn btn-success btn-xs">編集</a>
                             <a onclick="return confirm('ほんとに消すの？');" href="delete.php?feed_id=<?php echo $feed['id']; ?>" class="btn btn-danger btn-xs">削除</a>
