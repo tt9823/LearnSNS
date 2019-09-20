@@ -1,4 +1,25 @@
 <?php
+session_start();
+require('dbconnect.php');
+require('function.php');
+
+
+
+if (!isset($_SESSION['LearnSNS']['id'])) {
+    header('Location:signin.php');
+}
+
+$signin_user_id = $_SESSION['LearnSNS']['id'];
+$signin_user = getSinginUser ($dbh, $signin_user_id);
+$img_name = $signin_user['img_name'];
+
+$user_id = $_GET['user_id'];
+
+$user = getTargetUser($dbh, $user_id);
+
+$is_follower = swithFollowButton($dbh, $user_id, $signin_user_id);
+
+// var_dump($is_follower);
 
 ?>
 <?php include('layouts/header.php'); ?>
@@ -7,13 +28,20 @@
     <div class="container">
         <div class="row">
             <div class="col-xs-3 text-center">
-                <img src="user_profile_img/misae.png" class="img-thumbnail" />
-                <h2>野原みさえ</h2>
-                <a href="follow.php">
-                    <button class="btn btn-default btn-block">フォローする</button>
-                </a>
+                <img src="user_profile_img/<?php echo $user['img_name'] ?>" class="img-thumbnail" />
+                <h2><?php echo $user['name'] ?></h2>
+                <?php if ($signin_user_id !== $user_id) : ?>
+                    <?php if ($is_follower == false) :  ?>
+                        <a href="follow.php?following_id=<?php echo $user['id']; ?>">
+                            <button class="btn btn-default btn-block">フォローする</button>
+                        </a>
+                    <?php else :  ?>
+                    <a href="follow.php?following_id=<?php echo $user['id']; ?>">
+                            <button class="btn btn-default btn-block">フォロー解除する</button>
+                        </a>
+                    <?php endif; ?>
+                <?php endif; ?>
             </div>
-
             <div class="col-xs-9">
                 <ul class="nav nav-tabs">
                     <li class="active">

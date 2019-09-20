@@ -131,3 +131,31 @@ function getCommentcnt($dbh, $feed)
     $comment_cnt = $stmt->fetch(PDO::FETCH_ASSOC);
     return $comment_cnt;
 }
+
+function getTargetUser($dbh, $user_id)
+{
+    $sql = "SELECT * from `users` WHERE `id` = ?";
+    $data = array($user_id);
+    $stmt = $dbh->prepare($sql);
+    $stmt->execute($data);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $user;
+}
+
+function createFollowers($dbh, $user_id, $signin_user_id)
+{
+    $sql = 'INSERT INTO `followers` SET `user_id` = ?, `follower_id` = ?';
+    $data = array($user_id, $signin_user_id);
+    $stmt = $dbh->prepare($sql);
+    $stmt->execute($data);
+}
+
+function swithFollowButton($dbh, $user_id, $signin_user_id)
+{
+    $sql = 'SELECT `id` FROM `followers` WHERE `user_id` = ? AND `follower_id` = ?';
+    $data = array($user_id, $signin_user_id);
+    $stmt = $dbh->prepare($sql);
+    $stmt->execute($data);
+    $is_follower = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $is_follower;
+}
