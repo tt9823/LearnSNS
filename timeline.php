@@ -73,6 +73,7 @@ $feeds = getAllFeeds($dbh, $content_per_page, $start);
                 <?php foreach ($feeds as $feed) : ?>
                 <?php $comment = getComment($dbh, $feed); ?>
                 <?php $comment_cnt = getCommentcnt($dbh, $feed); ?>
+                <?php var_dump($feed); ?>
                 <div class="thumbnail">
                     <div class="row">
                         <div class="col-xs-1">

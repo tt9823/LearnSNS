@@ -131,3 +131,51 @@ function getCommentcnt($dbh, $feed)
     $comment_cnt = $stmt->fetch(PDO::FETCH_ASSOC);
     return $comment_cnt;
 }
+
+function getTargetUser($dbh, $user_id)
+{
+    $sql = "SELECT * from `users` WHERE `id` = ?";
+    $data = array($user_id);
+    $stmt = $dbh->prepare($sql);
+    $stmt->execute($data);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $user;
+}
+
+function createFollowers($dbh, $user_id, $signin_user_id)
+{
+    $sql = 'INSERT INTO `followers` SET `user_id` = ?, `follower_id` = ?';
+    $data = array($user_id, $signin_user_id);
+    $stmt = $dbh->prepare($sql);
+    $stmt->execute($data);
+}
+
+function swithFollowButton($dbh, $user_id, $signin_user_id)
+{
+    $sql = 'SELECT `id` FROM `followers` WHERE `user_id` = ? AND `follower_id` = ?';
+    $data = array($user_id, $signin_user_id);
+    $stmt = $dbh->prepare($sql);
+    $stmt->execute($data);
+    $is_follower = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $is_follower;
+}
+
+function getfollowers($dbh, $user_id)
+{
+    $sql = 'SELECT `u`.* FROM `followers` AS `f` LEFT JOIN `users` AS `u` ON `u`.`id` = `f`.`follower_id` WHERE `f`.`user_id` = ?';
+    $data = [$user_id];
+    $stmt = $dbh->prepare($sql);
+    $stmt->execute($data);
+    $followed = $stmt->fetchall(PDO::FETCH_ASSOC);
+    return $followed;
+}
+
+function getFollowings($dbh, $user_id)
+{
+    $sql = 'SELECT `u`.* FROM `followers` AS `f` LEFT JOIN `users` AS `u` ON `u`.`id` = `f`.`user_id` WHERE `f`.`follower_id` = ?';
+    $data = [$user_id];
+    $stmt = $dbh->prepare($sql);
+    $stmt->execute($data);
+    $following = $stmt->fetchall(PDO::FETCH_ASSOC);
+    return $following;
+}
