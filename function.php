@@ -159,3 +159,23 @@ function swithFollowButton($dbh, $user_id, $signin_user_id)
     $is_follower = $stmt->fetch(PDO::FETCH_ASSOC);
     return $is_follower;
 }
+
+function getfollowers($dbh, $user_id)
+{
+    $sql = 'SELECT `u`.* FROM `followers` AS `f` LEFT JOIN `users` AS `u` ON `u`.`id` = `f`.`follower_id` WHERE `f`.`user_id` = ?';
+    $data = [$user_id];
+    $stmt = $dbh->prepare($sql);
+    $stmt->execute($data);
+    $followed = $stmt->fetchall(PDO::FETCH_ASSOC);
+    return $followed;
+}
+
+function getFollowings($dbh, $user_id)
+{
+    $sql = 'SELECT `u`.* FROM `followers` AS `f` LEFT JOIN `users` AS `u` ON `u`.`id` = `f`.`user_id` WHERE `f`.`follower_id` = ?';
+    $data = [$user_id];
+    $stmt = $dbh->prepare($sql);
+    $stmt->execute($data);
+    $following = $stmt->fetchall(PDO::FETCH_ASSOC);
+    return $following;
+}

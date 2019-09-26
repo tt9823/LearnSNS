@@ -20,6 +20,10 @@ $user = getTargetUser($dbh, $user_id);
 $is_follower = swithFollowButton($dbh, $user_id, $signin_user_id);
 
 // var_dump($is_follower);
+$followed = [];
+$followed = getfollowers($dbh, $user_id);
+$followings = getFollowings($dbh, $user_id);
+
 
 ?>
 <?php include('layouts/header.php'); ?>
@@ -53,33 +57,37 @@ $is_follower = swithFollowButton($dbh, $user_id, $signin_user_id);
                 </ul>
                 <div class="tab-content">
                     <div id="tab1" class="tab-pane fade in active">
-                        <div class="thumbnail">
-                            <div class="row">
-                                <div class="col-xs-2">
-                                    <img src="user_profile_img/misae.png" width="80px">
-                                </div>
-                                <div class="col-xs-10">
-                                    名前 <a href="profile.php" style="color: #7F7F7F;">野原みさえ</a>
-                                    <br>
-                                    2018-10-14 12:34:56からメンバー
+                        <?php foreach ($followed as $follower) : ?>
+                            <div class="thumbnail">
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        <img src="user_profile_img/<?php echo $follower['img_name']; ?>" width="80px">
+                                    </div>
+                                    <div class="col-xs-10">
+                                        名前 <a href="profile.php?user_id=<?php echo $follower['id']; ?>" style="color: #7F7F7F;"><?php echo $follower['name']; ?></a>
+                                        <br>
+                                        <?php echo $follower['created']; ?>からメンバー
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        <?php endforeach; ?>
                     </div>
 
                     <div id="tab2" class="tab-pane fade">
-                        <div class="thumbnail">
-                            <div class="row">
-                                <div class="col-xs-2">
-                                    <img src="user_profile_img/misae.png" width="80px">
-                                </div>
-                                <div class="col-xs-10">
-                                    名前 <a href="profile.php" style="color: #7F7F7F;">野原みさえ</a>
-                                    <br>
-                                    2018-10-14 12:34:56からメンバー
+                        <?php foreach ($followings as $following) : ?>
+                            <div class="thumbnail">
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        <img src="user_profile_img/<?php echo $following['img_name']; ?>" width="80px">
+                                    </div>
+                                    <div class="col-xs-10">
+                                        名前 <a href="profile.php?user_id=<?php echo $following['id']; ?>" style="color: #7F7F7F;"><?php echo $following['name']; ?></a>
+                                        <br>
+                                        <?php echo $following['created']; ?>からメンバー
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             </div>
