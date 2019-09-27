@@ -49,7 +49,7 @@ $feeds = getAllFeeds($dbh, $content_per_page, $start);
 <?php include('layouts/header.php'); ?>
 <body style="margin-top: 60px; background: #E4E6EB;">
     <?php include('navbar.php'); ?>
-    <div class="container">
+    <span hidden id="signin-user"><?php echo $signin_user['id']; ?></span>
         <div class="row">
             <div class="col-xs-3">
                 <ul class="nav nav-pills nav-stacked">
@@ -73,7 +73,8 @@ $feeds = getAllFeeds($dbh, $content_per_page, $start);
                 <?php foreach ($feeds as $feed) : ?>
                 <?php $comment = getComment($dbh, $feed); ?>
                 <?php $comment_cnt = getCommentcnt($dbh, $feed); ?>
-                <?php var_dump($feed); ?>
+                <?php $like_cnt = likeCnt($dbh, $feed); ?>
+                <?php $is_like_flg = likeFlg($dbh, $signin_user, $feed); ?>
                 <div class="thumbnail">
                     <div class="row">
                         <div class="col-xs-1">
@@ -91,9 +92,16 @@ $feeds = getAllFeeds($dbh, $content_per_page, $start);
                     </div>
                     <div class="row feed_sub">
                         <div class="col-xs-12">
-                            <button class="btn btn-default">いいね！</button>
+                            <span hidden class="feed-id"><?php echo $feed['id']; ?></span>
+                            <?php if ($is_like_flg !== false) : ?>
+                                <button class="btn btn-default btn-xs js-unlike">
+                                    <span>いいねを取り消す</span>
+                                </button>
+                            <?php else : ?>
+                                <button class="btn btn-default js-like"><span>いいね！</span></button>
+                            <?php endif; ?>
                             いいね数：
-                            <span class="like-count">10</span>
+                            <span class="like-count"><?php echo $like_cnt['like_cnt']; ?></span>
                             <?php if ($signin_user['id'] !== $feed['user_id']) : ?>
                                 <a href="#collapseComment<?php echo $feed['id']; ?>" data-toggle="collapse" aria-expanded="false"><span>コメントする</span></a>
                             <?php endif; ?>
