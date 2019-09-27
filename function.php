@@ -179,3 +179,27 @@ function getFollowings($dbh, $user_id)
     $following = $stmt->fetchall(PDO::FETCH_ASSOC);
     return $following;
 }
+
+function likeCnt($dbh, $feed)
+{
+    $feed_id = $feed['id'];
+    $like_cnt_sql = 'SELECT COUNT(*) AS `like_cnt` FROM `likes` WHERE `feed_id` = ?';
+    $like_cnt_data = [$feed_id];
+    $like_cnt_stmt = $dbh->prepare($like_cnt_sql);
+    $like_cnt_stmt->execute($like_cnt_data);
+    $like_cnt = $like_cnt_stmt->fetch(PDO::FETCH_ASSOC);
+    return $like_cnt;
+}
+
+function likeFlg($dbh, $signin_user, $feed)
+{
+    $feed_id = $feed['id'];
+    // var_dump($feed_id);
+    $signin_user_id = $signin_user['id'];
+    $like_flg_sql = 'SELECT * FROM `likes` WHERE `user_id` = ? AND `feed_id` = ?';
+    $like_flg_data = [$signin_user_id, $feed_id];
+    $like_flg_stmt = $dbh->prepare($like_flg_sql);
+    $like_flg_stmt->execute($like_flg_data);
+    $is_like_flg = $like_flg_stmt->fetch(PDO::FETCH_ASSOC);
+    return $is_like_flg;
+}
